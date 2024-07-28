@@ -17,14 +17,14 @@ export async function GET(request: Request) {
     const result = UsernameSchema.safeParse(queryParams);
 
     if (!result.success) {
-      const usernameErrors = result.error.format().username?._errors;
+      const usernameErrors = result.error.format().username?._errors[0];
 
       return Response.json(
         {
           success: false,
           message: usernameErrors,
         },
-        { status: 400 }
+        { status: 200 }
       );
     }
 
@@ -33,7 +33,7 @@ export async function GET(request: Request) {
       username,
       isVerified: true,
     });
-
+    console.log(username,existingVerifiedUser)
     if (existingVerifiedUser) {
       return Response.json(
         {
@@ -47,12 +47,12 @@ export async function GET(request: Request) {
     return Response.json(
       {
         success: true,
-        message: "username is unique",
+        message: "username is valid",
       },
       { status: 200 }
     );
   } catch (error) {
-    console.log("check-username-unique: ",error);
+    console.log("check-username-valid: ",error);
     return Response.json(
       {
         success: false,
